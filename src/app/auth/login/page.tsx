@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { User, Lock, Loader2, AlertCircle, Shield, Sparkles } from "lucide-react";
+import { User, Lock, Loader2, AlertCircle, Shield, Sparkles, Building, UserCheck } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,8 +32,18 @@ export default function LoginPage() {
         throw new Error(res.error.message || "Invalid email or password.");
       }
 
-      // Check role or redirect to account
-      router.push("/account");
+      const userRole = (res.data?.user as any)?.role || "fan";
+
+      // Smart Redirect based on role
+      if (["super_admin", "ticketing_admin", "venue_manager"].includes(userRole)) {
+        router.push("/admin");
+      } else if (userRole === "box_office_staff") {
+        router.push("/staff");
+      } else if (userRole === "gate_staff") {
+        router.push("/gate");
+      } else {
+        router.push("/account");
+      }
       router.refresh();
     } catch (err: any) {
       setError(err.message || "Authentication failed. Please verify your credentials.");
@@ -50,7 +60,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex-1 flex items-center justify-center py-12 px-4 bg-slate-50">
-      <div className="max-w-md w-full space-y-6">
+      <div className="max-w-xl w-full space-y-6">
         {/* Brand / Logo */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-950 border-2 border-cricket-gold flex items-center justify-center mx-auto shadow-md">
@@ -58,7 +68,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-2xl font-black font-serif text-foreground">Sign In to Your Account</h1>
           <p className="text-xs text-muted-foreground">
-            Access your match tickets, booking history, and turnstile entry passes
+            Official portal for fans, box office operations, gate turnstiles, and administration
           </p>
         </div>
 
@@ -79,7 +89,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="fan@pcb.demo"
+                  placeholder="name@domain.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-9 text-xs"
@@ -117,7 +127,7 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Verifying Identity...
+                  Authenticating...
                 </>
               ) : (
                 "Sign In"
@@ -125,55 +135,103 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Quick Demo Credentials Autofill */}
-          <div className="pt-4 border-t border-slate-100 space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block text-center">
-              Quick Demo Logins (Click to Autofill)
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setDemoCredentials("fan@pcb.demo", "CricketFan@2026!")}
-                className="text-left p-2 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-colors text-[11px]"
-              >
-                <span className="font-bold block text-foreground">Verified Fan</span>
-                <span className="text-stone-400 text-[10px]">fan@pcb.demo</span>
-              </button>
+          {/* Quick Demo Credentials Autofill for all 6 roles */}
+          <div className="pt-4 border-t border-slate-100 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                One-Click Role Quick Logins
+              </span>
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-medium">
+                Live Neon DB Seeded
+              </span>
+            </div>
 
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setDemoCredentials("superadmin@pcb.demo", "SuperAdmin@2026!")}
-                className="text-left p-2 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-colors text-[11px]"
+                className="text-left p-2.5 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-all text-xs group"
               >
-                <span className="font-bold block text-foreground">Super Admin</span>
-                <span className="text-stone-400 text-[10px]">superadmin@pcb.demo</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-foreground group-hover:text-emerald-800">Super Admin</span>
+                  <Shield className="w-3.5 h-3.5 text-amber-500" />
+                </div>
+                <span className="text-[10px] text-stone-400 block truncate">superadmin@pcb.demo</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setDemoCredentials("gatestaff@pcb.demo", "GateStaff@2026!")}
-                className="text-left p-2 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-colors text-[11px]"
+                onClick={() => setDemoCredentials("ticketingadmin@pcb.demo", "TicketAdmin@2026!")}
+                className="text-left p-2.5 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-all text-xs group"
               >
-                <span className="font-bold block text-foreground">Gate Staff</span>
-                <span className="text-stone-400 text-[10px]">gatestaff@pcb.demo</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-foreground group-hover:text-emerald-800">Ticketing Admin</span>
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <span className="text-[10px] text-stone-400 block truncate">ticketingadmin@pcb.demo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDemoCredentials("venuemanager@pcb.demo", "VenueManager@2026!")}
+                className="text-left p-2.5 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-all text-xs group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-foreground group-hover:text-emerald-800">Venue Manager</span>
+                  <Building className="w-3.5 h-3.5 text-blue-600" />
+                </div>
+                <span className="text-[10px] text-stone-400 block truncate">venuemanager@pcb.demo</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setDemoCredentials("boxoffice@pcb.demo", "BoxOffice@2026!")}
-                className="text-left p-2 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-colors text-[11px]"
+                className="text-left p-2.5 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-all text-xs group"
               >
-                <span className="font-bold block text-foreground">Box Office</span>
-                <span className="text-stone-400 text-[10px]">boxoffice@pcb.demo</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-foreground group-hover:text-emerald-800">Box Office</span>
+                  <UserCheck className="w-3.5 h-3.5 text-purple-600" />
+                </div>
+                <span className="text-[10px] text-stone-400 block truncate">boxoffice@pcb.demo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDemoCredentials("gatestaff@pcb.demo", "GateStaff@2026!")}
+                className="text-left p-2.5 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-all text-xs group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-foreground group-hover:text-emerald-800">Gate Staff</span>
+                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <span className="text-[10px] text-stone-400 block truncate">gatestaff@pcb.demo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDemoCredentials("fan@pcb.demo", "FanUser@2026!")}
+                className="text-left p-2.5 rounded-lg border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/50 transition-all text-xs group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-foreground group-hover:text-emerald-800">Cricket Fan</span>
+                  <User className="w-3.5 h-3.5 text-emerald-700" />
+                </div>
+                <span className="text-[10px] text-stone-400 block truncate">fan@pcb.demo</span>
               </button>
             </div>
           </div>
 
-          <div className="text-center text-xs text-muted-foreground pt-2">
-            Don&apos;t have an account yet?{" "}
-            <Link href="/auth/register" className="text-cricket-primary font-bold hover:underline">
-              Register as Fan
-            </Link>
+          <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
+            <span>Don&apos;t have an account?</span>
+            <div className="space-x-3">
+              <Link href="/auth/register" className="text-cricket-primary font-bold hover:underline">
+                Register Fan
+              </Link>
+              <span>&bull;</span>
+              <Link href="/auth/register?staff=true" className="text-emerald-700 font-bold hover:underline">
+                Staff Onboarding
+              </Link>
+            </div>
           </div>
         </div>
       </div>
