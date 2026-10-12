@@ -8,7 +8,6 @@ import {
   MapPin,
   ChevronRight,
   ArrowRight,
-  Info,
   CheckCircle2,
   Trophy,
 } from "lucide-react";
@@ -17,117 +16,24 @@ import { MatchCard } from "@/components/shared/match-card";
 import { VenueCard } from "@/components/shared/venue-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getMatches } from "@/services/matches";
+import { getVenues } from "@/services/venues";
 
-// Demo Seed Data for initial rendering & preview
-const FEATURED_MATCHES = [
-  {
-    id: "match-1",
-    seriesName: "England Tour of Pakistan 2026",
-    homeTeam: "Pakistan",
-    awayTeam: "England",
-    homeTeamCode: "PAK",
-    awayTeamCode: "ENG",
-    format: "T20I" as const,
-    date: "2026-11-14",
-    time: "19:00",
-    venueName: "Gaddafi Stadium",
-    city: "Lahore",
-    minPrice: 1000,
-    status: "UPCOMING" as const,
-  },
-  {
-    id: "match-2",
-    seriesName: "England Tour of Pakistan 2026",
-    homeTeam: "Pakistan",
-    awayTeam: "England",
-    homeTeamCode: "PAK",
-    awayTeamCode: "ENG",
-    format: "T20I" as const,
-    date: "2026-11-16",
-    time: "19:00",
-    venueName: "Gaddafi Stadium",
-    city: "Lahore",
-    minPrice: 1000,
-    status: "UPCOMING" as const,
-  },
-  {
-    id: "match-3",
-    seriesName: "Australia in Pakistan Test Championship",
-    homeTeam: "Pakistan",
-    awayTeam: "Australia",
-    homeTeamCode: "PAK",
-    awayTeamCode: "AUS",
-    format: "TEST" as const,
-    date: "2026-12-01",
-    time: "09:30",
-    venueName: "National Bank Stadium",
-    city: "Karachi",
-    minPrice: 500,
-    status: "UPCOMING" as const,
-  },
-  {
-    id: "match-4",
-    seriesName: "South Africa Tour of Pakistan 2026",
-    homeTeam: "Pakistan",
-    awayTeam: "South Africa",
-    homeTeamCode: "PAK",
-    awayTeamCode: "SA",
-    format: "ODI" as const,
-    date: "2026-12-18",
-    time: "14:30",
-    venueName: "Rawalpindi Cricket Stadium",
-    city: "Rawalpindi",
-    minPrice: 800,
-    status: "UPCOMING" as const,
-  },
-];
+export default async function HomePage() {
+  const [matchesList, venuesList] = await Promise.all([
+    getMatches({ status: "UPCOMING" }),
+    getVenues(),
+  ]);
 
-const STADIUMS = [
-  {
-    id: "gaddafi-lahore",
-    name: "Gaddafi Stadium",
-    city: "Lahore",
-    capacity: 27000,
-    standCount: 14,
-    description: "The spiritual heart of Pakistan cricket, featuring renovated floodlit enclosures, Imran Khan enclosure, and Fazal Mahmood stand.",
-    upcomingMatchCount: 4,
-  },
-  {
-    id: "national-bank-karachi",
-    name: "National Bank Stadium",
-    city: "Karachi",
-    capacity: 34228,
-    standCount: 16,
-    description: "The iconic seaside fortress of cricket in Pakistan, known for pulsating crowds and the legendary Hanif Mohammad Enclosure.",
-    upcomingMatchCount: 3,
-  },
-  {
-    id: "pindi-stadium",
-    name: "Rawalpindi Cricket Stadium",
-    city: "Rawalpindi",
-    capacity: 17000,
-    standCount: 10,
-    description: "High-scoring battles, electric atmospheres, and panoramic views near the twin cities.",
-    upcomingMatchCount: 2,
-  },
-  {
-    id: "multan-stadium",
-    name: "Multan Cricket Stadium",
-    city: "Multan",
-    capacity: 25000,
-    standCount: 12,
-    description: "Famous for lush green outfields, intense local passion, and modern spectator amenities in south Punjab.",
-    upcomingMatchCount: 2,
-  },
-];
+  const featuredMatches = matchesList.slice(0, 4);
+  const featuredVenues = venuesList.slice(0, 4);
 
-export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       {/* 1. Hero Section */}
       <HeroBanner />
 
-      {/* 2. Featured Matches Section */}
+      {/* 2. Featured Matches Section (Database-backed) */}
       <section className="py-12 lg:py-16 container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
@@ -148,8 +54,23 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FEATURED_MATCHES.map((match) => (
-            <MatchCard key={match.id} {...match} />
+          {featuredMatches.map((match) => (
+            <MatchCard
+              key={match.id}
+              id={match.id}
+              seriesName={match.seriesName}
+              homeTeam={match.homeTeam}
+              awayTeam={match.awayTeam}
+              homeTeamCode={match.homeTeamCode}
+              awayTeamCode={match.awayTeamCode}
+              format={match.format as any}
+              date={match.date}
+              time={match.time}
+              venueName={match.venueName}
+              city={match.city}
+              minPrice={match.minPrice}
+              status={match.status as any}
+            />
           ))}
         </div>
       </section>
@@ -170,7 +91,6 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
             <div className="p-6 rounded-xl bg-emerald-900/30 border border-emerald-800/50 backdrop-blur-sm space-y-3">
               <div className="w-12 h-12 rounded-lg bg-emerald-800/80 text-cricket-gold flex items-center justify-center border border-emerald-700">
                 <ShieldCheck className="w-6 h-6" />
@@ -181,7 +101,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature 2 */}
             <div className="p-6 rounded-xl bg-emerald-900/30 border border-emerald-800/50 backdrop-blur-sm space-y-3">
               <div className="w-12 h-12 rounded-lg bg-emerald-800/80 text-cricket-gold flex items-center justify-center border border-emerald-700">
                 <Zap className="w-6 h-6" />
@@ -192,7 +111,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Feature 3 */}
             <div className="p-6 rounded-xl bg-emerald-900/30 border border-emerald-800/50 backdrop-blur-sm space-y-3">
               <div className="w-12 h-12 rounded-lg bg-emerald-800/80 text-cricket-gold flex items-center justify-center border border-emerald-700">
                 <CreditCard className="w-6 h-6" />
@@ -206,7 +124,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Iconic Stadiums & Venues */}
+      {/* 4. Iconic Stadiums & Venues (Database-backed) */}
       <section className="py-14 container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
@@ -226,8 +144,17 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {STADIUMS.map((stadium) => (
-            <VenueCard key={stadium.id} {...stadium} />
+          {featuredVenues.map((stadium) => (
+            <VenueCard
+              key={stadium.id}
+              id={stadium.id}
+              name={stadium.name}
+              city={stadium.city}
+              capacity={stadium.capacity}
+              standCount={stadium.standCount}
+              description={stadium.description}
+              upcomingMatchCount={stadium.upcomingMatchCount}
+            />
           ))}
         </div>
       </section>
@@ -282,7 +209,7 @@ export default function HomePage() {
               <span>Gate Opening &amp; Timing</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Stadium gates open 3 hours prior to match commencement. We strongly advise fans to arrive at least 90 minutes early to clear physical security checkpoints comfortably.
+              Stadium gates open 3 hours prior to match commencement. We strongly advise fans to arrive early to clear physical security checkpoints comfortably.
             </p>
           </div>
 
