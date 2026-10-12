@@ -101,9 +101,12 @@ export function Header() {
             </span>
           </div>
           <div className="flex items-center gap-4 text-xs font-medium">
-            <Link href="/scanner" className="hover:text-cricket-gold flex items-center gap-1 transition-colors">
+            <Link href="/gate" className="hover:text-cricket-gold flex items-center gap-1 transition-colors">
               <Shield className="w-3 h-3 text-cricket-gold" />
-              <span>Gate Staff Scanner</span>
+              <span>Gate Scanner</span>
+            </Link>
+            <Link href="/staff" className="hover:text-cricket-gold flex items-center gap-1 transition-colors">
+              <span>Box Office</span>
             </Link>
             <Link href="/admin" className="hover:text-cricket-gold flex items-center gap-1 transition-colors">
               <span>Admin Portal</span>
