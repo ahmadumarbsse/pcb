@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 155 30% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 155 30% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 155 30% 12%;
+
+    /* Cricket Emerald/Forest Green #0b5c2c */
+    --primary: 144 79% 21%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Soft Cricket Light Green tint */
+    --secondary: 142 55% 95%;
+    --secondary-foreground: 144 79% 21%;
+
+    --muted: 140 10% 96%;
+    --muted-foreground: 150 10% 40%;
+
+    /* Trophy Gold #d4af37 */
+    --accent: 46 65% 52%;
+    --accent-foreground: 155 30% 12%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 140 15% 90%;
+    --input: 140 15% 90%;
+    --ring: 144 79% 21%;
+
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 155 35% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 155 35% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 155 35% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 142 70% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 155 25% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 155 20% 15%;
+    --muted-foreground: 140 10% 65%;
+
+    --accent: 46 65% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 155 25% 18%;
+    --input: 155 25% 18%;
+    --ring: 142 70% 36%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-cricket-primary selection:text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* RTL Urdu Support */
+[dir="rtl"] {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Nastaliq Urdu", sans-serif;
+  letter-spacing: normal;
+}
+
+/* Cricket themed badges & gradients */
+.cricket-hero-gradient {
+  background: linear-gradient(135deg, #052e16 0%, #0b5c2c 50%, #042411 100%);
+}
+
+.cricket-gold-gradient {
+  background: linear-gradient(135deg, #d4af37 0%, #fef3c7 50%, #b45309 100%);
+}
+
+.stadium-pitch-pattern {
+  background-color: #052e16;
+  background-image: radial-gradient(rgba(21, 128, 61, 0.25) 1px, transparent 0);
+  background-size: 24px 24px;
+}
