@@ -12,13 +12,13 @@ export interface MatchCardProps {
   awayTeam: string;
   homeTeamCode?: string;
   awayTeamCode?: string;
-  format: "TEST" | "ODI" | "T20I" | "DOMESTIC";
+  format: "TEST" | "ODI" | "T20I" | "DOMESTIC" | string;
   date: string;
   time: string;
   venueName: string;
   city: string;
   minPrice: number;
-  status: "UPCOMING" | "LIVE" | "COMPLETED" | "POSTPONED";
+  status: "UPCOMING" | "LIVE" | "COMPLETED" | "POSTPONED" | string;
   availabilityText?: string;
 }
 

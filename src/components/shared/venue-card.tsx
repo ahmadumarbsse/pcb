@@ -10,7 +10,7 @@ export interface VenueCardProps {
   capacity: number;
   standCount: number;
   description: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   upcomingMatchCount?: number;
 }
 
